@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TOdoList</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-size: 12px;
+        }
+        ul, ol {list-style: none;}
+        body{
+            padding: 10px;
+            padding-top: 20px;
+        }
+        header {
+            background-color: blue;
+            
+        }
+        header > div {
+            padding: 10px;
+        }
+        header > div > p{
+            font-size: 30px;
+            color : white;
+            font-style: normal;
+            font-weight: 300;
+        }
+
+        main > #todoP {
+            padding: 20px 10px;
+        }
+
+        main > #todoMain {
+            width: 100%;
+            position: relative;   
+        }
+
+        #todoInput {
+           
+            width: 90%;
+            margin:0;  
+            padding: 3px 0;  
+            padding-left: 5px;
+        }
+       
+        #addBtn{
+            position: absolute;
+            width: 10%;
+            border: none;
+            top: 0;
+            bottom: 0;
+            right: 1px;
+            margin: auto 0;
+            border-radius: 0 3px 3px 0;
+            background-color: blue;
+            color: white;
+        }
+        #todoList {
+            padding-top: 10px;
+            width: 100%;
+            position: relative;  
+            display: flex; 
+            flex-direction: column;
+        }
+ 
+    .Todolist > li{
+        padding: 0;
+        list-style: none;
+        line-height: 20px; 
+        position: relative;
+        font-weight: 400;
+        cursor: pointer;
+       
+        border-radius: 3px;
+    }
+
+    #result > li{ 
+        border-radius: 3px ;
+       
+        padding: 3px 0;
+    }
+    #result > li:nth-child(1){
+        border: 0.3px solid gray; 
+        padding-left: 10px;
+    }
+    #result > li:not(:first-child){
+        border-bottom: 0.3px solid gray;
+        border-left: 0.3px solid gray;
+        border-right: 0.3px solid gray;
+        padding-left: 10px;
+    }
+    .Todolist button {
+        position: absolute;
+            width: 10%;
+            border: none;
+            padding: 0;
+            top: 0;
+            bottom: 0;
+            right: 1px;
+            margin: auto 0;
+            border-radius: 0 3px 3px 0;
+            background-color: white;
+            color: gray;
+    }
+
+    </style>
+    <script>
+        
+        window.onload = function() {
+
+        let todos = JSON.parse(localStorage.getItem('todos')) || [];
+        const input = document.getElementById('todoInput');
+        const addBtn = document.querySelector('#addBtn');
+        const result = document.getElementById('result');
+        
+
+        console.log(todos);
+           
+            result.innerHTML = '';
+            todos.forEach((todo, index) => {
+                let list = document.createElement("li");
+                let del = document.createElement('button');
+                
+                list.innerHTML = todo;
+                result.appendChild(list); //추가된 할일에 할일 리스트 추가하기
+                list.appendChild(del); 
+                del.innerText = "X";      //삭제버튼에 들어갈 'x'자 문자
+                del.style.fontSize = "15px";
+                del.style.float = "right";
+                del.style.position='relative';
+                
+                input.value = '';
+                del.addEventListener("click", function(e){
+                    todos.splice(index,1);
+                    localStorage.setItem('todos', JSON.stringify(todos));
+                    let removeOne = e.target.parentElement;  //선택한 목록 한개만 지우기(부모 객체를 지운다)
+                    removeOne.remove();
+                    }); //삭제버튼 클릭시 리스트지우기 이벤트 실행
+            });
+
+        
+        
+
+        addBtn.addEventListener("click", function(){
+           if(input.value == false){
+                alert('내용을 입력하세요!');
+           } else {
+            todos.push(input.value.trim());
+            localStorage.setItem('todos', JSON.stringify(todos));
+            let list = document.createElement("li");
+            let del = document.createElement('button');
+            console.log(todos);
+            list.innerHTML = input.value;
+            result.appendChild(list); //추가된 할일에 할일 리스트 추가하기
+            list.appendChild(del); 
+            del.innerText = "X";      //삭제버튼에 들어갈 'x'자 문자
+            del.style.fontSize = "15px";
+            del.style.float = "right";
+            del.style.position='relative';
+         
+            input.value = '';
+            del.addEventListener("click", function(e){
+                todos.forEach((todo, index) => {
+                todos.splice(index,1);
+                localStorage.setItem('todos', JSON.stringify(todos));
+                let removeOne = e.target.parentElement;  //선택한 목록 한개만 지우기(부모 객체를 지운다)
+                removeOne.remove();
+                })
+            }); //삭제버튼 클릭시 리스트지우기 이벤트 실행
+           }
+        })
+        
+    }
+    </script>
+</head>
+<body>
+
+    <header>
+        <div>
+            <p>ToDo List</p>
+        </div>
+    </header>
+    <main>
+        <div id="todoP">
+            <p>오늘 할 일을 작성해 보세요.</p>
+        </div>
+        <div id="todoMain">
+                <input type="text" id="todoInput" placeholder="할일을 입력하세요.">
+                <button id="addBtn">추가</button>
+        </div>
+        <div id="todoList">
+            <div>
+                <ul id="addTodo" class="Todolist"> 
+                    <li><div id='result'></div></li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
